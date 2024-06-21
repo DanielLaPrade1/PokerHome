@@ -1,0 +1,158 @@
+.nav-btn {
+  display: none;
+  background-image: url(../images/nav.png);
+  background-size: contain;
+  background-color: #d5cfbe;
+  border: none;
+  margin: 0.2em 0em 0em 0.2em;
+  height: 2em;
+  width: 2em;
+}
+.custom-nav {
+  margin-top: 3vh;
+  width: 6vw;
+  position: fixed;
+}
+.right-content {
+  width: 100vw;
+  height: 100%;
+  margin-left: 6vw;
+}
+.content-box {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #ddddc6;
+  border: 2px solid darkgrey;
+}
+
+/*large-*/
+@media screen and (max-width: 1200px){
+  .welcome-text {
+    display: none;
+  }
+  .custom-nav {
+    width: 7vw;
+  }
+}
+/*medium-*/
+@media screen and (max-width: 991px){
+  .nav-btn {
+    display: block;
+  }
+  .custom-nav {
+    width: 9vw;
+    margin-top: 0vh;
+    position: relative;
+  }
+  .right-content {
+    margin-left: 0px;
+  }
+}
+
+/*small-*/
+@media screen and (max-width: 768px){
+  .custom-nav {
+    width: 12vw;
+  }
+}
+/*mobile*/
+@media screen and (max-width: 576px){
+  .custom-nav {
+    width: 15vw;
+  }
+}
+@media screen and (max-width: 400px){
+  .custom-nav {
+    width: 20vw;
+  }
+  .logout {
+    display: none;
+  }
+}
+
+.nav-top {
+  background-color:#d5cfbe;
+}
+.nav-top-item {
+  background-color: #ddddc6;
+  border-left: 1px solid darkgray;
+  border-right: 1px solid darkgray;
+  border-top: 1px solid darkgray;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 0.7vw 0.7vh;
+  margin-top: 1%;
+  margin-left: 10px;
+}
+.top-link {
+  color: black;
+  text-decoration: none;
+  font-size: 100%;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 800;
+}
+.top-link:hover {
+  color: darkgoldenrod;
+}
+.color-active {
+  color: darkgoldenrod;
+}
+
+.nav-side-item {
+  width: 98%;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-duration: 0.5s;
+}
+.nav-side-item:hover {
+  width: 100%;
+  background-color: darkgoldenrod;
+}
+
+.login {
+  color: black;
+  border: 2px solid black;
+}
+.logout {
+  color: black;
+  border: 2px solid black;
+}
+.login, .logout {
+  text-decoration: none;
+  font-size: 0.7vw 0.7vh;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 800;
+  border-radius: 5px;
+  padding: 0.3vw 0.7vh;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-duration: 0.5s;
+}
+.login:hover {
+  color: green;
+  border-color: green;
+}
+.logout:hover {
+  color: red;
+  border-color: red;
+}
+
+/* Player Dropdown : Start Game */
+.dropdown{
+  display: inline-block;
+}
+.dropdown .content{
+  display: none;
+  position: absolute;
+  background-color: hsl(0, 0%, 95%);
+  min-width: max-content;
+  padding: 10%;
+  box-shadow: 2px 2px 5px hsla(0, 0%, 0%, 0.8);
+}
+.dropdown:hover .content{
+  display: block;
+}
+.dropdown:hover button{
+  background-color: hsl(0, 0%, 70%);
+}
+.dropdown a:hover{
+  background-color: hsl(0, 0%, 90%);
+}

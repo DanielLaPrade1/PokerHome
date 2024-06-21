@@ -1,0 +1,91 @@
+{% load static %}
+<h1 class="text-center">{{ club.name }}'s Dashboard</h1>
+<div class="row">
+  <div class="col-md-6">
+    <!-- TOP LEFT -->
+    <div class="content-box-left">
+      <div>
+        <h2 class="text-center">Top 3</h2>
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th scope="col">Ranking</th>
+              <th scope="col">Name</th>
+              <th scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for member in top_3 %}
+            <tr>
+              <td>
+                {% if member.ranking != 999999 %}{{ member.ranking }}
+                {% else %}N/A{% endif %}
+              </td>
+              <td> {{member.user.first_name}} {{ member.user.last_name }}</td>
+              <td>{{ member.score }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table> 
+      </div>
+    </div>
+    <!-- BOTTOM LEFT -->
+    <div class="content-box-left text-center" style="align-items: baseline;">
+      <div>
+        <h2 class="">Recent Games</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Type</th>
+              <th scope="col">Buy-In</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% with last_three_games=club.games.all|dictsortreversed:"date"|slice:":3" %}
+            {% for game in last_three_games %}
+            <tr>
+              <td>{{game.type}}</td>
+              <td>{{game.buy_in}}</td>
+              <td>{{game.date}}</td>
+            </tr>
+            {% endfor %}
+          {% endwith %}
+          </tbody>
+        </table> 
+        <button id="see-all-games">See All Games</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <!-- RIGHT -->
+    <div class="content-box-right">
+      <div style="width: 100%;">
+        <h2 class="text-center">LeaderBoard</h2>
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th scope="col">Ranking</th>
+              <th scope="col">Name</th>
+              <th scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for member in members %}
+            <tr>
+              <td>
+                {% if member.ranking != 999999 %}{{ member.ranking }}
+                {% else %}N/A{% endif %}
+              </td>
+              <td> {{member.user.first_name}} {{ member.user.last_name }}</td>
+              <td>{{ member.score }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table> 
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+</script>

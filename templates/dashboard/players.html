@@ -1,0 +1,46 @@
+{% if members|length == 0 %}
+  <p>No members found.</p>
+{% else %}
+<h1 class="text-center">Players</h1>
+<table class="table table-hover text-center">
+  <thead>
+    <tr>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Username</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+    <tr>
+      <td>{{ member.user.first_name }}</td>
+      <td>{{ member.user.last_name }}</td>
+      <td>{{ member.user.email }}</td>
+      <td>{{ member.user.phone }}</td>
+      <td>{{ member.user.username }}</td>
+      <!--Delete Member-->
+      <td>
+        <form method="post" name="players_remove">
+          {% csrf_token %}
+          <div class="d-flex">
+            <!--Idenification--><input type="hidden" name="form_name" value="players_remove">
+            <!--Idenification--><input type="hidden" name="user_id" value="{{ member.id }}">
+            <button type="submit" style="margin-left: 1em;" onclick="return confirm('Are You Sure You Want to Remove {{ member.user.first_name }} {{ member.user.last_name }} From the Club?')">Remove</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table> 
+{% endif %}
+<form method="post" name="players_add">
+  {% csrf_token %}
+  <div class="d-flex">
+    {{ form.username }}
+    <!--Idenification--><input type="hidden" name="form_name" value="players_add">
+    <button id="submit_player_delete" type="submit" style="margin-left: 1em;">Add Member</button>
+  </div>
+</form>

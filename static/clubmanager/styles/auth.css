@@ -1,0 +1,120 @@
+.main-container {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.main-content{
+	border-radius: 20px;
+	box-shadow: 0 5px 5px rgba(0,0,0,.4);
+	display: flex;
+}
+
+.image-panel-log{
+  border-top: 1px solid darkseagreen;
+  background-image: url(../images/register_main.png);
+  background-position: center;
+  background-size:100%;
+  background-repeat: no-repeat;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
+	display: flex;
+	justify-content: center;
+	color: #fff;
+  background-color: darkseagreen;
+}
+.image-panel-reg{
+  border-top: 1px solid darkseagreen;
+  background-image: url(../images/login_main.png);
+  background-position: center;
+  background-size:100%;
+  background-repeat: no-repeat;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
+	display: flex;
+	justify-content: center;
+	color: #fff;
+  background-color: darkseagreen;
+}
+
+.logo {
+  box-shadow: 0 5px 5px rgba(0,0,0,.4);
+}
+
+.fa-android{
+	font-size:3em;
+}
+@media screen and (max-width: 991px) {
+	.main-content{width: 90%;}
+	.image-panel{
+		display: none;
+    border: none;
+	}
+	.login_form{
+		border-top-left-radius:20px;
+		border-bottom-left-radius:20px;
+	}
+}
+.row > h2{
+  margin-top: 2px;
+  margin-bottom: 20px;
+	color: darkolivegreen;
+  font-weight: 600;
+}
+.login_form {
+	background-color: #ddddc6;
+	border-top-right-radius:20px;
+	border-bottom-right-radius:20px;
+	border-top:1px solid #ddddc6;
+	border-right:1px solid #ddddc6;
+}
+form{
+	padding: 1em 2em;
+}
+.form-input{
+  background-color: honeydew;
+	border: 0px solid transparent;
+	border-radius: 4px;
+	border-bottom: 1px solid #ddddc6;
+	padding: 1em .8em .8em;
+	outline: none;
+	margin:1.5em 1em 1em;
+	transition: all .5s ease;
+}
+.form-input:focus{
+	border-bottom-color: #ddddc6;
+	box-shadow: 0 0 5px rgba(0,80,80,.4); 
+	border-radius: 4px;
+}
+
+.form-input-small{
+  background-color: honeydew;
+	border: 0px solid transparent;
+	border-radius: 4px;
+	border-bottom: 1px solid #ddddc6;
+	padding: 1em .8em .8em;
+  width: 100%;
+	outline: none;
+	margin: 0.3em 0em 1em 1em;
+	transition: all .5s ease;
+}
+
+.btn-login{
+	transition: all .5s ease;
+  height: 3em;
+	border-radius: 20px;
+	color:#008080;
+	font-weight: 600;
+	background-color: honeydew;
+	border: 1px solid #008080;
+	margin: 2em 1em 1em 1em;
+}
+.btn-login:hover, .btn-login:focus{
+	background-color: darkolivegreen;
+	color:#fff;
+}
+
+.error {
+  color: red;
+  margin-top: 0px;
+}
