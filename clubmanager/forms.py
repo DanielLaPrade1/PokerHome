@@ -35,6 +35,20 @@ class GameForm(forms.ModelForm):
         fields = ("type", "buy_in", 'players')
 
 
+class GameScoresForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        game = kwargs.pop('game')
+        super(GameScoresForm, self).__init__(*args, **kwargs)
+
+        for player in game.players.all():
+            self.fields[f'{player.id}'] = forms.IntegerField(
+                label=f'{player.user.first_name} {
+                    player.user.last_name}',
+                required=False,
+                widget=forms.NumberInput(attrs={'class': 'player-score-box'})
+            )
+
+
 class TournamentForm(forms.ModelForm):
     players = forms.ModelMultipleChoiceField(
         queryset=None,

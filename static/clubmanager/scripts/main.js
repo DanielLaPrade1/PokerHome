@@ -2,10 +2,10 @@ const navLinks = document.querySelectorAll('.nav-link, .top-link');
 const contentBox = document.querySelector('.content-box');
 const loadingContainer = document.querySelector('.loading-icon');
 const leagueLink = document.getElementById('league')
+const storedActiveLink = sessionStorage.getItem('activeLink');
 
 document.addEventListener('DOMContentLoaded', function() {
   //Active Link Rerouting
-  const storedActiveLink = sessionStorage.getItem('activeLink');
   const activeLink = Array.from(navLinks).find(link => {
     return link.id === storedActiveLink;
   });
@@ -39,9 +39,20 @@ navLinks.forEach(function(link) {
         if (contentBox.contains(loadingContainer)) {
           contentBox.removeChild(loadingContainer);
         }
-        //See All Games Link : League
-        const seeAllGames = document.getElementById('see-all-games');
-        if (seeAllGames !== null) {
+        //League
+        if (storedActiveLink === 'league') {
+          // Rank Animation
+          const ranks = document.querySelectorAll('.podium__rank');
+          ranks.forEach(rank => rank.classList.add('animate'));
+          
+          setTimeout(() => {
+            ranks.forEach(rank => {
+              rank.classList.remove('animate')
+            });
+          }, 100);
+
+          // Recent Games Button
+          const seeAllGames = document.getElementById('see-all-games');
           const recentGamesLink = document.getElementById('recent-games');
           seeAllGames.addEventListener('click', function(event) {
             recentGamesLink.click();

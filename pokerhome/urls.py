@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from clubmanager.views import LeagueView, PlayersView, RecentGamesView, StartGameView, TournamentCreatorView, DashboardView, LoginView, LogoutView, CreateClubView
+from clubmanager.views import LeagueView, PlayersView, RecentGamesView, StartGameView, TournamentCreatorView, DashboardView, LoginView, LogoutView, CreateClubView, GameManagerView
 from home.views import LandingPageView
 from accounts.views import RegisterView
 
@@ -41,4 +41,7 @@ urlpatterns = [
          StartGameView, name='start-game'),
     path('dashboard/<int:club_id>/tournaments/', TournamentCreatorView,
          name='tournament-creator'),
+    # Game Managers
+    path('dashboard/<int:club_id>/game-manager/<int:game_id>',
+         GameManagerView, name='game-manager'),
 ]

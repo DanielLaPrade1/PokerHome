@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ClubCreationForm, AddMemberForm, GameForm, TournamentForm
+from .forms import ClubCreationForm, AddMemberForm, GameForm, GameScoresForm, TournamentForm
 from .models import Club, Member, Game, Tournament
 from accounts.models import CustomUser
 from .tournament import calculate_blind_structure
@@ -36,10 +36,7 @@ class DashboardView(TemplateView):
                 user = CustomUser.objects.filter(username=username).first()
                 if user:
                     member = Member(user=user)
-                    new_scores = {}
                     member.save()
-                    club.update_rankings(
-                        club_id=club_id, new_scores=new_scores)
                     club.members.add(member)
                     club.save()
                 else:
@@ -54,15 +51,19 @@ class DashboardView(TemplateView):
         if request.POST.get('form_name') == 'start_game':
             form = GameForm(club, request.POST)
             if form.is_valid():
-                game = form.save(commit=False)
+                game = form.save()
                 game.save()
-                form.save_m2m()
-                club.games.add(Game.objects.get(id=game.id))
+                return redirect('game-manager', club_id=club_id, game_id=game.id)
         # Deleting a game
         if request.POST.get('form_name') == 'game_remove':
             form = GameForm(club, request.POST)
             game_id = request.POST.get('game_id')
             game = get_object_or_404(Game, id=game_id)
+            # Negate all scores and update rankings
+            negated_scores = {mem: -score for mem,
+                              score in game.player_scores.items()}
+            club.update_rankings(
+                club_id=club_id, new_scores=negated_scores)
             club.games.remove(game)
         # Starting a tournament
         if request.POST.get('form_name') == 'start_tournament':
@@ -90,10 +91,9 @@ class DashboardView(TemplateView):
 def LeagueView(request, club_id):
     club = get_object_or_404(Club, id=club_id)
     template = loader.get_template('dashboard/league.html')
-    members = club.members.all()
+    members = club.members.all().order_by('ranking')
     top_3 = members.order_by(
-        'ranking')[:3] if len(members) >= 3 else members.order_by(
-        'ranking')
+        'ranking')[:3] if len(members) >= 3 else members
     league_template = template.render(
         {'club': club, 'members': members, 'top_3': top_3}, request)
     return HttpResponse(league_template)
@@ -130,6 +130,29 @@ def StartGameView(request, club_id):
     start_game_template = template.render(
         {'form': form, 'club': club, 'members': members}, request)
     return HttpResponse(start_game_template)
+
+
+@ login_required
+def GameManagerView(request, club_id, game_id):
+    club = get_object_or_404(Club, id=club_id)
+    game = get_object_or_404(Game, id=game_id)
+    if request.method == 'POST':
+        form = GameScoresForm(request.POST, game=game)
+        if form.is_valid():
+            scores = {}
+            for player_id, score in form.cleaned_data.items():
+                print(player_id, score)
+                scores[player_id] = score
+            game.player_scores = scores
+            game.save()
+            club.games.add(game)
+            club.update_rankings(
+                club_id=club_id, new_scores=game.player_scores)
+            club.save()
+            return redirect('dashboard', club_id=club_id)
+    else:
+        form = GameScoresForm(game=game)
+        return render(request, 'dashboard/game_manager.html', {'club': club, 'game': game, 'form': form})
 
 
 @ login_required

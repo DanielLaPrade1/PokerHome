@@ -1,32 +1,40 @@
 {% load static %}
-<h1 class="text-center">{{ club.name }}'s Dashboard</h1>
+<h1 class="text-center">{{ club.name }}</h1>
 <div class="row">
   <div class="col-md-6">
     <!-- TOP LEFT -->
-    <div class="content-box-left">
-      <div>
-        <h2 class="text-center">Top 3</h2>
-        <table class="table text-center">
-          <thead>
-            <tr>
-              <th scope="col">Ranking</th>
-              <th scope="col">Name</th>
-              <th scope="col">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for member in top_3 %}
-            <tr>
-              <td>
-                {% if member.ranking != 999999 %}{{ member.ranking }}
-                {% else %}N/A{% endif %}
-              </td>
-              <td> {{member.user.first_name}} {{ member.user.last_name }}</td>
-              <td>{{ member.score }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table> 
+    <div class="content-box-left text-center">
+      <div class="podium">
+        <div class="podium__item">
+          <p class="podium__city">2nd</p>
+          <div class="podium__rank second">
+            <p class="podium__name">
+              {{top_3.1.user.first_name}} 
+              {{top_3.1.user.last_name}}
+              {{top_3.1.score}}
+            </p>
+          </div>
+        </div>
+        <div class="podium__item">
+          <p class="podium__city">1st</p>
+          <div class="podium__rank first">
+            <p class="podium__name">
+              {{top_3.0.user.first_name}} 
+              {{top_3.0.user.last_name}}
+              {{top_3.0.score}}
+            </p>
+          </div>
+        </div>
+        <div class="podium__item">
+          <p class="podium__city">3rd</p>
+          <div class="podium__rank third">
+            <p class="podium__name">
+              {{top_3.2.user.first_name}} 
+              {{top_3.2.user.last_name}}
+              {{top_3.2.score}}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <!-- BOTTOM LEFT -->
@@ -87,5 +95,3 @@
     </div>
   </div>
 </div>
-<script>
-</script>

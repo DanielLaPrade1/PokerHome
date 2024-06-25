@@ -16,11 +16,14 @@ class Member(models.Model):
 
 
 class Game(models.Model):
-    # e.g. Hold-em, 7-Card Stud, etc
+    # Game Setup
     type = models.CharField(max_length=30)
     buy_in = models.FloatField()
     date = models.DateField(default=date.today)
     players = models.ManyToManyField(Member)
+
+    # Game Results
+    player_scores = models.JSONField(default=dict)
 
     def __str__(self):
         return f'{self.type}{self.date}'
@@ -58,8 +61,8 @@ class Club(models.Model):
         members = club.members.all()
 
         for member in members:
-            if str(member.user.username) in new_scores:
-                new_score = new_scores[str(member.user.username)]
+            if str(member.id) in new_scores:
+                new_score = new_scores[str(member.id)]
                 member.score = models.F('score') + new_score
                 member.save()
 
