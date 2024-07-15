@@ -7,24 +7,43 @@ def round_to_nearest_multiple(num, factor):
 
 
 # Calculate rounding factor based on small blind value
-def calculate_rounding_factor(small_blind):
-    num_digits = len(str(small_blind))
-    if num_digits <= 2:
-        return small_blind
-    else:
-        return 10 ** (num_digits - 2)
+# Need to prioritize 2x, 5x and 10x small blind
+def calculate_rounding_factor(small_blind, original_small_blind):
+    if (small_blind // 250) > original_small_blind:
+        return original_small_blind * 100
+    elif (small_blind // 25) > original_small_blind:
+        return original_small_blind * 10
+    elif (small_blind // 13) > original_small_blind:
+        return original_small_blind * 5
+    elif (small_blind // 5) > original_small_blind:
+        return original_small_blind * 2
+    return original_small_blind
+
+
+# Format Time
+def format_time(minutes):
+    hours = 0
+    time = f'{hours:02d}:{minutes:02d}'
+    if minutes >= 60:
+        hours = minutes // 60
+        minutes = minutes % 60
+        time = f'{hours:02d}:{minutes:02d}'
+    return time
 
 
 # Calculate Tournament Blind Structure
 def calculate_blind_structure(num_players, starting_stack, target_duration, blind_duration, small_blind):
-    total_chips = num_players * starting_stack
-    num_levels = math.ceil(target_duration / blind_duration)
-
     original_small_blind = small_blind
+    total_chips = num_players * starting_stack
+    num_levels = round(target_duration / blind_duration)
+
     big_blind = small_blind * 2
 
+    # Blind Increase Multiple
+    #   Used for calculating current small blind from previous small blind
+    final_bb = total_chips * 0.05
     blind_increase_factor = (
-        total_chips / (small_blind * 4)) ** (1 / num_levels)
+        (final_bb / big_blind) ** (1 / num_levels))
 
     # Generate blind structure
     blind_structure = []
@@ -32,31 +51,30 @@ def calculate_blind_structure(num_players, starting_stack, target_duration, blin
     for level in range(1, num_levels + 1):
         # Add current level to blind structure
         blind_structure.append(
-            (level, small_blind, big_blind))
+            (level, small_blind, big_blind, format_time(blind_duration * level)))
 
         # Next Blinds Calculation, Keep Track of 2 variables -->
-        rounding_factor = calculate_rounding_factor(original_small_blind)
-
-        # Precision variable
-        precise_small_blind = round(
+        # 1. Precision variable
+        precise_small_blind = math.ceil(
             precise_small_blind * blind_increase_factor)
 
-        # Actual Small Blind (should catch up to precise small blind when necessary)
-        previous_small_blind = small_blind
+        # Small blind rounding
+        rounding_factor = calculate_rounding_factor(
+            small_blind, original_small_blind)
+
+        # 2. Actual Small Blind (should hang around precise small blind with rounding applied)
         small_blind = round_to_nearest_multiple(
-            precise_small_blind, original_small_blind)
-        if small_blind <= previous_small_blind:
-            small_blind = previous_small_blind + original_small_blind
+            precise_small_blind, rounding_factor)
         big_blind = small_blind * 2
 
     return blind_structure
 
 
 # Usage
-# num_players = 15
-# small_blind = 20
-# starting_stack = 1000  # _ chips
-# target_duration = 300  # _ minutes
+# num_players = 20
+# small_blind = 1
+# starting_stack = 200  # _ chips
+# target_duration = 240  # _ minutes
 # blind_duration = 10  # _ minutes per level
 
 # blind_structure = calculate_blind_structure(
@@ -69,6 +87,5 @@ def calculate_blind_structure(num_players, starting_stack, target_duration, blin
 # blind_duration = {blind_duration}
 # small_blind = {small_blind}
 # """)
-# for level, small_blind, precise_small_blind, big_blind in blind_structure:
-#     print(f"Level {level}: SB = {small_blind}, precise_SB =
-#           {precise_small_blind} BB = {big_blind}")
+# for level, small_blind, big_blind, time in blind_structure:
+#     print(f"Level {level}: SB = {small_blind}, BB = {big_blind}, Time: {time}")

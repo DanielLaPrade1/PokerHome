@@ -21,6 +21,7 @@ class Game(models.Model):
     buy_in = models.FloatField()
     date = models.DateField(default=date.today)
     players = models.ManyToManyField(Member)
+    player_buy_ins = models.JSONField(default=dict)
 
     # Game Results
     player_scores = models.JSONField(default=dict)

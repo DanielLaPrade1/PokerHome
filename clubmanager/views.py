@@ -2,20 +2,31 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 from django.template import loader
-from django.template.loader import render_to_string
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ClubCreationForm, AddMemberForm, GameForm, GameScoresForm, TournamentForm
+from django.core.exceptions import PermissionDenied, ValidationError
+from .forms import ClubCreationForm, AddMemberForm, GameForm, GameScoresForm, TournamentForm, GameBuyInEditForm
 from .models import Club, Member, Game, Tournament
 from accounts.models import CustomUser
 from .tournament import calculate_blind_structure
 
 
+# Ensures that Nobody but the Club Creator can access the club dashboard
+class ClubCreatorCheck:
+    def dispatch(self, request, *args, **kwargs):
+        club_id = kwargs.get('club_id')
+        club = get_object_or_404(Club, id=club_id)
+        if request.user != club.created_by:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
 # Club Dashboard, handles all POST requests
 @method_decorator(login_required, name='dispatch')
-class DashboardView(TemplateView):
+class DashboardView(ClubCreatorCheck, TemplateView):
     template_name = 'dashboard/dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -32,28 +43,48 @@ class DashboardView(TemplateView):
         if request.POST.get('form_name') == 'players_add':
             form = AddMemberForm(request.POST)
             if form.is_valid():
-                username = form.cleaned_data['username']
-                user = CustomUser.objects.filter(username=username).first()
-                if user:
-                    member = Member(user=user)
-                    member.save()
-                    club.members.add(member)
-                    club.save()
-                else:
-                    pass
+                try:
+                    username = form.cleaned_data['username']
+                    user = CustomUser.objects.filter(username=username).first()
+                    if user:
+                        if club.members.filter(user=user).exists():
+                            raise ValidationError(
+                                f"{user.username} is already a member of {club.name}")
+                        else:
+                            member = Member(user=user)
+                            member.save()
+                            club.members.add(member)
+                            club.save()
+                            messages.success(request,
+                                             f"Member {user.username} added successfully")
+                    else:
+                        raise ValidationError("User does not exist.")
+                except ValidationError as e:
+                    messages.error(request, e.message)
         # Deleting Players From a Club
         if request.POST.get('form_name') == 'players_remove':
             form = AddMemberForm(request.POST)
             user_id = request.POST.get('user_id')
             member = get_object_or_404(Member, id=user_id)
             club.members.remove(member)
+            # Update Rankings
+            club.update_rankings(
+                club_id=club_id, new_scores={})
         # Starting a game
         if request.POST.get('form_name') == 'start_game':
             form = GameForm(club, request.POST)
             if form.is_valid():
-                game = form.save()
-                game.save()
-                return redirect('game-manager', club_id=club_id, game_id=game.id)
+                try:
+                    players = form.cleaned_data['players']
+                    if len(players) < 2:
+                        raise ValidationError(
+                            "A Minimum of 2 Players is Required to Start a Game")
+                    else:
+                        game = form.save()
+                        game.save()
+                        return redirect('game-manager', club_id=club_id, game_id=game.id)
+                except ValidationError as e:
+                    messages.error(request, e.message)
         # Deleting a game
         if request.POST.get('form_name') == 'game_remove':
             form = GameForm(club, request.POST)
@@ -73,7 +104,7 @@ class DashboardView(TemplateView):
                 tournament.save()
                 tournament.blind_structure = calculate_blind_structure(
                     tournament.players.count(), tournament.starting_stack,
-                    tournament.target_duration, tournament.blind_duration,
+                    tournament.target_duration * 60, tournament.blind_duration,
                     tournament.small_blind)
                 tournament.save()
                 club.tournaments.add(Tournament.objects.get(id=tournament.id))
@@ -136,23 +167,44 @@ def StartGameView(request, club_id):
 def GameManagerView(request, club_id, game_id):
     club = get_object_or_404(Club, id=club_id)
     game = get_object_or_404(Game, id=game_id)
+    buy_ins = {player.id: game.buy_in for player in game.players.all()}
+    game.player_buy_ins = buy_ins
+    game.save()
     if request.method == 'POST':
-        form = GameScoresForm(request.POST, game=game)
-        if form.is_valid():
-            scores = {}
-            for player_id, score in form.cleaned_data.items():
-                print(player_id, score)
-                scores[player_id] = score
-            game.player_scores = scores
-            game.save()
-            club.games.add(game)
-            club.update_rankings(
-                club_id=club_id, new_scores=game.player_scores)
-            club.save()
-            return redirect('dashboard', club_id=club_id)
+        # Score Input
+        if request.POST.get('form_name') == 'input_scores':
+            form = GameScoresForm(request.POST, game=game)
+            if form.is_valid():
+                scores = {}
+                for member_id, score in form.cleaned_data.items():
+                    scores[member_id] = score
+                game.player_scores = scores
+                game.save()
+                club.games.add(game)
+                club.update_rankings(
+                    club_id=club_id, new_scores=game.player_scores)
+                club.save()
+                return redirect('dashboard', club_id=club_id)
+        # Buy-In Update
+        elif request.POST.get('form_name') == 'update_buy_in':
+            buy_ins = {}
+            form = GameBuyInEditForm(request.POST, game=game)
+            if form.is_valid():
+                for member_id, buy_in in form.cleaned_data.items():
+                    buy_ins[int(member_id)] = buy_in
+                game.player_buy_ins = buy_ins
+                game.save()
+                game_scores_form = GameScoresForm(game=game)
+                buy_in_form = GameBuyInEditForm(game=game)
+                context = {'club': club, 'game': game,
+                           'game_scores_form': game_scores_form, 'buy_in_form': buy_in_form}
+                return render(request, 'dashboard/game_manager.html', context)
     else:
-        form = GameScoresForm(game=game)
-        return render(request, 'dashboard/game_manager.html', {'club': club, 'game': game, 'form': form})
+        game_scores_form = GameScoresForm(game=game)
+        buy_in_form = GameBuyInEditForm(game=game)
+        context = {'club': club, 'game': game,
+                   'game_scores_form': game_scores_form, 'buy_in_form': buy_in_form}
+        return render(request, 'dashboard/game_manager.html', context)
 
 
 @ login_required

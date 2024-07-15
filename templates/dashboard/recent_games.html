@@ -1,12 +1,12 @@
 <div>
   <h2 class="text-center">Recent Games</h2>
-  <table class="table text-center">
+  <table class="ct text-center" >
     <thead>
       <tr>
-        <th scope="col">Type</th>
-        <th scope="col">Buy-In</th>
-        <th scope="col">Date</th>
-        <th scope="col">Players</th>
+        <th>Type</th>
+        <th>Buy-In</th>
+        <th>Date</th>
+        <th>Players</th>
       </tr>
     </thead>
     <tbody>
@@ -22,13 +22,13 @@
           {% endfor %}
           </ul>
         </td>
-        <td>
+        <td class="text-center">
           <form method="post" name="game_remove">
             {% csrf_token %}
-            <div class="d-flex">
+            <div>
               <!--Idenification--><input type="hidden" name="form_name" value="game_remove">
               <!--Idenification--><input type="hidden" name="game_id" value="{{ game.id }}">
-              <button type="submit" style="margin-left: 1em;" onclick="return confirm('Are You Sure You Want to Remove This Game?')">Remove</button>
+              <button class="remove-btn" type="submit" onclick="return confirm('Are You Sure You Want to Remove This Game?')"></button>
             </div>
           </form>
         </td>

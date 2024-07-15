@@ -2,7 +2,10 @@ const navLinks = document.querySelectorAll('.nav-link, .top-link');
 const contentBox = document.querySelector('.content-box');
 const loadingContainer = document.querySelector('.loading-icon');
 const leagueLink = document.getElementById('league')
-const storedActiveLink = sessionStorage.getItem('activeLink');
+let storedActiveLink = sessionStorage.getItem('activeLink');
+
+//animations
+let podium_animation = true
 
 document.addEventListener('DOMContentLoaded', function() {
   //Active Link Rerouting
@@ -40,17 +43,19 @@ navLinks.forEach(function(link) {
           contentBox.removeChild(loadingContainer);
         }
         //League
-        if (storedActiveLink === 'league') {
+        storedActiveLink = sessionStorage.getItem('activeLink');
+        if (storedActiveLink == 'league') {
           // Rank Animation
-          const ranks = document.querySelectorAll('.podium__rank');
-          ranks.forEach(rank => rank.classList.add('animate'));
-          
-          setTimeout(() => {
-            ranks.forEach(rank => {
-              rank.classList.remove('animate')
-            });
-          }, 100);
-
+          if (podium_animation) {
+            podium_animation = false
+            const ranks = document.querySelectorAll('.podium__rank');
+            ranks.forEach(rank => rank.classList.add('animate'));
+            setTimeout(() => {
+              ranks.forEach(rank => {
+                rank.classList.remove('animate')
+              });
+            }, 100);
+          }
           // Recent Games Button
           const seeAllGames = document.getElementById('see-all-games');
           const recentGamesLink = document.getElementById('recent-games');
@@ -70,9 +75,16 @@ const handleLinkClick = (event) => {
   const url = clickedLink.href;
 
   navLinks.forEach(link => link.classList.remove('active'));
-  clickedLink.classList.add('active');
+  // Cash game link brings you to league page
+  if (clickedLink.id == 'cash') {
+    leagueLink.classList.add('active')
+    sessionStorage.setItem('activeLink', 'league');
+  }
+  else {
+    clickedLink.classList.add('active');
+    sessionStorage.setItem('activeLink', clickedLink.id);
+  }
 
-  sessionStorage.setItem('activeLink', clickedLink.id);
 }
 
 navLinks.forEach(link => {
@@ -105,3 +117,27 @@ league.addEventListener('click', () => activateTopLink('cash'))
 players.addEventListener('click', () => activateTopLink('cash'))
 recent_games.addEventListener('click', () => activateTopLink('cash'))
 start_game.addEventListener('click', () => activateTopLink('cash'))
+
+// Message Disapearing Act
+const msg = document.getElementById('message');
+setTimeout(function() {
+  if (msg) {
+    msg.style.display = 'none';
+  }
+}, 4000);
+
+// Nav Button
+const navBtn = document.getElementById('nav-btn');
+let closedNav = true;
+navBtn.addEventListener('click', () => {
+  if (closedNav) {
+    navBtn.classList.remove('nav-btn-forward')
+    navBtn.classList.add('nav-btn-back')
+  } else {
+    setTimeout(() => {
+      navBtn.classList.remove('nav-btn-back')
+      navBtn.classList.add('nav-btn-forward')
+    }, 400)
+  }
+  closedNav = !closedNav
+})

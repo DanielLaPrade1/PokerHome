@@ -6,33 +6,36 @@
     <div class="content-box-left text-center">
       <div class="podium">
         <div class="podium__item">
-          <p class="podium__city">2nd</p>
+          <p class="podium-player">
+            {{top_3.1.user.first_name}} 
+            {{top_3.1.user.last_name}}
+          </p>
           <div class="podium__rank second">
-            <p class="podium__name">
-              {{top_3.1.user.first_name}} 
-              {{top_3.1.user.last_name}}
+            <h2 class="podium__name">
               {{top_3.1.score}}
-            </p>
+            </h2>
           </div>
         </div>
         <div class="podium__item">
-          <p class="podium__city">1st</p>
+          <p class="podium-player">
+            {{top_3.0.user.first_name}} 
+            {{top_3.0.user.last_name}}
+          </p>
           <div class="podium__rank first">
-            <p class="podium__name">
-              {{top_3.0.user.first_name}} 
-              {{top_3.0.user.last_name}}
+            <h2 class="podium__name">
               {{top_3.0.score}}
-            </p>
+            </h2>
           </div>
         </div>
         <div class="podium__item">
-          <p class="podium__city">3rd</p>
+          <p class="podium-player">
+            {{top_3.2.user.first_name}} 
+            {{top_3.2.user.last_name}}
+          </p>
           <div class="podium__rank third">
-            <p class="podium__name">
-              {{top_3.2.user.first_name}} 
-              {{top_3.2.user.last_name}}
+            <h2 class="podium__name">
               {{top_3.2.score}}
-            </p>
+            </h2>
           </div>
         </div>
       </div>
@@ -41,12 +44,12 @@
     <div class="content-box-left text-center" style="align-items: baseline;">
       <div>
         <h2 class="">Recent Games</h2>
-        <table class="table">
+        <table class="ct">
           <thead>
             <tr>
-              <th scope="col">Type</th>
-              <th scope="col">Buy-In</th>
-              <th scope="col">Date</th>
+              <th>Type</th>
+              <th>Buy-In</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
@@ -61,16 +64,16 @@
           {% endwith %}
           </tbody>
         </table> 
-        <button id="see-all-games">See All Games</button>
+        <button id="see-all-games" class="button-game">See All Games</button>
       </div>
     </div>
   </div>
   <div class="col-md-6">
     <!-- RIGHT -->
     <div class="content-box-right">
-      <div style="width: 100%;">
-        <h2 class="text-center">LeaderBoard</h2>
-        <table class="table text-center">
+      <div class="text-center" style="width: 100%;">
+        <h2 class="">LeaderBoard</h2>
+        <table class="ct">
           <thead>
             <tr>
               <th scope="col">Ranking</th>

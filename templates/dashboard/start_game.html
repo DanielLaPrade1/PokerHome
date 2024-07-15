@@ -1,15 +1,20 @@
 <h1>Ready to Start a Game?</h1>
 <h2>Fill in the fields below and select your players</h2>
-<form method="post">
+<form method="post" style="border: 1px solid lightgray; border-radius: 10px; background-color: 
+#142230;">
   {% csrf_token %}
   <!--Idenification--><input type="hidden" name="form_name" value="start_game">
-  {{form.type}}
-  {{form.buy_in}}
-  <div class="dropdown">
-    <button onclick="event.preventDefault()">Players</button>
+  <div class="m-3">
+    {{form.type}}
+  </div>
+  <div class="m-3">
+    {{form.buy_in}}
+  </div>
+  <div class="dropdown m-3">
+    <button class="button-game" onclick="event.preventDefault()">Players</button>
     <div class="content">
         {{form.players}}
     </div>
   </div>
-  <input type="submit">
+  <input class="button-game m-1" type="submit" value="Create Game">
 </form>

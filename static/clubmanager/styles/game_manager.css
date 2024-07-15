@@ -1,13 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
+
+h1, h2, h3, h4, h5, h6, p, th, td, div {
+  font-family: "Cabin", sans-serif;
+  color: lightgray;
+}
+
+/* Content Boxes */
+.content-box-gm {
+  padding: 0.4em;
+  margin: 0.4em;
+  border: 3px double lightgray;
+}
+
+.top-left-box {
+  min-height: 15vh;
+}
+.bottom-left-box {
+  min-height: 72vh;
+}
+.right-box {
+  min-height: 90vh;
+}
+
+/* Timer */
+
+/* Enter Scores for players */
 .input-modal {
   max-width: 50vw;
-  border: none;
+  border: 1px solid #09131e;
   border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px #09131e;
+  background-color: #0d1b2b;
+  transform: translateY(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .input-modal::backdrop {
   background-image: url(../images/login_bg.jpg);
-  opacity: .25;
-  transition: opacity 3s ease;
+  opacity: .1;
+}
+@keyframes fadeInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.input-modal.active-modal {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeInFromTop 0.4s ease forwards;
+}
+@keyframes fadeOutToTop {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+.input-modal.closing-modal {
+  animation: fadeOutToTop 0.3s ease forwards;
 }
 
 .open-input-results {
@@ -26,4 +83,15 @@
 .modal-options {
   display: flex;
   justify-content: space-between;
+}
+
+/* Lost Chips Counter */
+.no-loss {
+  color: green;
+}
+.moderate-loss {
+  color: yellow;
+}
+.severe-loss {
+  color: red;
 }
