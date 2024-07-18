@@ -12,67 +12,95 @@
 <body style="background-color: #0d1b2b;">
   <div class="container-fluid">
     <div class="row">
-        <div class="col-6 d-flex flex-column">
-          <!-- TOP LEFT -->
-          <div class="content-box-gm top-left-box d-flex align-items-center justify-content-center">
-            <!-- Timer -->
-            <div class="d-flex timer-container">
-              <h1 class="timer m-1" id="timer">00:00:00</h1>
-              <button id="startBtn" class="button-game m-1" hidden>></button>
-              <button id="pauseBtn" class="button-game m-1">||</button>
-            </div>
+      <div class="col-6 d-flex flex-column">
+        <!-- TOP LEFT -->
+        <div class="content-box-gm top-left-box d-flex align-items-center justify-content-center">
+          <!-- Timer -->
+          <div class="d-flex timer-container">
+            <h1 class="timer m-1" id="timer">00:00:00</h1>
+            <button id="startBtn" class="button-game m-1" hidden>></button>
+            <button id="pauseBtn" class="button-game m-1">||</button>
           </div>
-          <!-- BOTTOM LEFT -->
-          <div class="content-box-gm bottom-left-box d-flex align-items-center justify-content-center">
-            <!-- Input Results -->
-            <div class="text-center">
-              <button class="open-input-results button-game" id="open-input-results">Input Results</button>
-            </div>
-            <!-- Dialog -->
-            <dialog class="input-modal" id="input-modal">
-              <h2 class="text-center p-1">Input Results</h2>
-              <form id="input-form" method="post">
-                <!--Idenification--><input type="hidden" name="form_name" value="input_scores">
-                <div id="lost-chips">Lost Chips: <span id="total-lost-chips">0</span></div>
-                {% csrf_token %}
-                {% for player in game_scores_form %}
-                  <div class="form-input p-2">
-                    <div class="text-center">
-                      {{ player.label_tag }}
-                    </div>
-                    <div class="text-center">
-                      {{ player }}
-                    </div>
+        </div>
+        <!-- BOTTOM LEFT -->
+        <div class="content-box-gm bottom-left-box d-flex flex-column align-items-center justify-content-center">
+          <!-- Input Results -->
+          <img class="m-5" src="{% static 'clubmanager/images/manager_graphic.png' %}" style="height: 20em; opacity: 0.8;">
+          <div class="text-center">
+            <button class="open-input-results button-game" id="open-input-results" style="background-color: #ff7676; color: black;">End Game</button>
+          </div>
+          <!-- Dialog -->
+          <dialog class="input-modal" id="input-modal">
+            <h2 class="text-center p-1">Input Results</h2>
+            <form id="input-form" method="post">
+              <!--Idenification--><input type="hidden" name="form_name" value="input_scores">
+              <div id="lost-chips">Lost Chips: <span id="total-lost-chips">0</span></div>
+              {% csrf_token %}
+              {% for player in game_scores_form %}
+                <div class="form-input p-2">
+                  <div class="text-center">
+                    {{ player.label_tag }}
                   </div>
-                {% endfor %}
-                <div class="modal-options p-4">
-                  <button class="close-input-results button-game" id="close-input-results" onclick="event.preventDefault()">Exit</button>
-                  <button type="submit" class="button-game">Save Scores</button>
+                  <div class="text-center">
+                    {{ player }}
+                  </div>
                 </div>
-              </form>
-            </dialog>
+              {% endfor %}
+              <div class="modal-options p-4">
+                <button class="close-input-results button-game" id="close-input-results" onclick="event.preventDefault()">Exit</button>
+                <button type="submit" class="button-game">Save Scores</button>
+              </div>
+            </form>
+          </dialog>
+        </div>
+      </div>
+      <div class="col-6">
+        <!-- RIGHT -->
+        <!-- Main Container -->
+        <div class="content-box-gm right-box p-2">
+          <div class="d-flex">
+            <h1 class="m-2">Active Players</h1>
+            <button class="m-2 button-game update-buy-in" id="open-buy-in">Edit</button>
           </div>
+          <table class="ct text-center">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Current Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for player in game.players.all %}
+              <tr>
+                <td>{{ player.user.first_name }} {{ player.user.last_name }}</td>
+                <td>{{ player.score }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="col-6">
-            <!-- RIGHT -->
-            <div class="content-box-gm right-box d-flex align-items-center justify-content-center">
-              <form id="input-form" method="post">
-                <!--Idenification--><input type="hidden" name="form_name" value="update_buy_in">
-                {% csrf_token %}
-                {% for player in buy_in_form %}
-                  <div class="form-input p-2">
-                    <div class="text-center">
-                      {{ player.label_tag }}
-                    </div>
-                    <div class="text-center">
-                      {{ player }}
-                    </div>
-                  </div>
-                {% endfor %}
-                <button type="submit" class="button-game">Update Buy-In</button>
-              </form>
+        <!-- Update Buy In Dialog -->
+        <dialog class="input-modal" id="update-buy-in-modal">
+          <form id="input-form" method="post">
+            <!--Idenification--><input type="hidden" name="form_name" value="update_buy_in">
+            {% csrf_token %}
+            {% for player in buy_in_form %}
+              <div class="form-input p-2">
+                <div class="text-center">
+                  {{ player.label_tag }}
+                </div>
+                <div class="text-center">
+                  {{ player }}
+                </div>
+              </div>
+            {% endfor %}
+            <div class="modal-options p-4">
+              <button class="button-game" id="close-buy-in" onclick="event.preventDefault()">Exit</button>
+              <button type="submit" class="button-game">Update Buy-In</button>
             </div>
-        </div>
+          </form>
+        </dialog>
+      </div>
     </div>
   </div>
   {{ game.player_buy_ins|json_script:"buy-in" }}

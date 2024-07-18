@@ -10,6 +10,7 @@ h1, h2, h3, h4, h5, h6, p, th, td, div {
   padding: 0.4em;
   margin: 0.4em;
   border: 3px double lightgray;
+  border-radius: 5px;
 }
 
 .top-left-box {
@@ -65,10 +66,6 @@ h1, h2, h3, h4, h5, h6, p, th, td, div {
 }
 .input-modal.closing-modal {
   animation: fadeOutToTop 0.3s ease forwards;
-}
-
-.open-input-results {
-  margin-top: 10%;
 }
 
 .form-input {

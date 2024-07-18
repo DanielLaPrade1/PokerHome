@@ -18,7 +18,7 @@ class Member(models.Model):
 class Game(models.Model):
     # Game Setup
     type = models.CharField(max_length=30)
-    buy_in = models.FloatField()
+    buy_in = models.IntegerField()
     date = models.DateField(default=date.today)
     players = models.ManyToManyField(Member)
     player_buy_ins = models.JSONField(default=dict)

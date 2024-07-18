@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 })
 
+//MODALS
 
 // Player Results Modal
 const inputResultModal = document.getElementById('input-modal')
@@ -95,26 +96,44 @@ openInputModal.addEventListener('click', () => {
   inputResultModal.showModal()
   inputResultModal.classList.add('active-modal');
   pauseTimer()
-
 })
 // Close Modal
 const closeInputModal = document.getElementById('close-input-results')
-const closeModal = () => {
-  inputResultModal.classList.remove('active-modal');
-  inputResultModal.classList.add('closing-modal');
+const closeModal = (modal) => {
+  modal.classList.remove('active-modal');
+  modal.classList.add('closing-modal');
   setTimeout(() => {
-    inputResultModal.classList.remove('closing-modal');
-    inputResultModal.close();
+    modal.classList.remove('closing-modal');
+    modal.close();
   }, 300);
   if (timerRunning == 'true') {
     startTimer();
   }
 }
-closeInputModal.addEventListener('click', closeModal);
+closeInputModal.addEventListener('click', () => closeModal(inputResultModal));
+
+//Update Buy In Modal
+const openBuyInModal = document.getElementById('open-buy-in')
+
+//Open Modal
+const buyInModal = document.getElementById("update-buy-in-modal")
+openBuyInModal.addEventListener('click', () => {
+  buyInModal.showModal()
+  buyInModal.classList.add('active-modal');
+})
+// Close Modal
+const closeBuyInModal = document.getElementById('close-buy-in')
+closeBuyInModal.addEventListener('click', () => closeModal(buyInModal));
+
+// Escape Key For Modals
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && inputResultModal.open) {
     event.preventDefault()
-    closeModal();
+    closeModal(inputResultModal);
+  }
+  else if (event.key === 'Escape' && buyInModal.open) {
+    event.preventDefault()
+    closeModal(buyInModal);
   }
 })
 
