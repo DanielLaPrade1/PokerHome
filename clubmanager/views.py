@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied, ValidationError
-from .forms import ClubCreationForm, AddMemberForm, GameForm, GameScoresForm, TournamentForm, GameBuyInEditForm
+from .forms import ClubCreationForm, AddMemberForm, GameForm, GameScoresForm, TournamentForm, GameBuyInEditForm, CreatedMemberForm
 from .models import Club, Member, Game, Tournament
 from accounts.models import CustomUser
 from .tournament import calculate_blind_structure
@@ -57,10 +57,22 @@ class DashboardView(ClubCreatorCheck, TemplateView):
                             club.save()
                             messages.success(request,
                                              f"Member {user.username} added successfully")
+                            club.update_rankings(
+                                club_id=club_id, new_scores={})
                     else:
                         raise ValidationError("User does not exist.")
                 except ValidationError as e:
                     messages.error(request, e.message)
+        if request.POST.get('form_name') == 'created_players_add':
+            form = CreatedMemberForm(request.POST)
+            if form.is_valid():
+                new_created_member = form.save()
+                member = Member(created_user=new_created_member)
+                member.save()
+                club.members.add(member)
+                club.update_rankings(
+                    club_id=club_id, new_scores={})
+                club.save()
         # Deleting Players From a Club
         if request.POST.get('form_name') == 'players_remove':
             form = AddMemberForm(request.POST)
@@ -91,8 +103,9 @@ class DashboardView(ClubCreatorCheck, TemplateView):
             game_id = request.POST.get('game_id')
             game = get_object_or_404(Game, id=game_id)
             # Negate all scores and update rankings
-            negated_scores = {mem: -score for mem,
+            negated_scores = {int(mem): -score for mem,
                               score in game.player_scores.items()}
+            print(negated_scores)
             club.update_rankings(
                 club_id=club_id, new_scores=negated_scores)
             club.games.remove(game)
@@ -133,11 +146,12 @@ def LeagueView(request, club_id):
 def PlayersView(request, club_id):
     club = get_object_or_404(Club, id=club_id)
     form = AddMemberForm()
+    create_member_form = CreatedMemberForm()
     members = club.members.all()
 
     template = loader.get_template('dashboard/players.html')
     players_template = template.render(
-        {'form': form, 'club': club, 'members': members}, request)
+        {'form': form, 'create_member_form': create_member_form, 'club': club, 'members': members}, request)
     return HttpResponse(players_template)
 
 
@@ -167,17 +181,24 @@ def StartGameView(request, club_id):
 def GameManagerView(request, club_id, game_id):
     club = get_object_or_404(Club, id=club_id)
     game = get_object_or_404(Game, id=game_id)
-    buy_ins = {player.id: game.buy_in for player in game.players.all()}
-    game.player_buy_ins = buy_ins
-    game.save()
+    # Update Player Buy Ins
+    if game.player_buy_ins == {}:
+        buy_ins = {int(player.id): game.buy_in
+                   for player in game.players.all()}
+        game.player_buy_ins = buy_ins
+        game.save()
     if request.method == 'POST':
+        game.player_buy_ins = {
+            int(id): buy_in for id, buy_in in game.player_buy_ins.items()}
+        game.save()
         # Score Input
         if request.POST.get('form_name') == 'input_scores':
             form = GameScoresForm(request.POST, game=game)
             if form.is_valid():
                 scores = {}
-                for member_id, score in form.cleaned_data.items():
-                    scores[member_id] = score
+                for player_id, score in form.cleaned_data.items():
+                    scores[int(player_id)] = score - game.player_buy_ins[int(
+                        player_id)]
                 game.player_scores = scores
                 game.save()
                 club.games.add(game)
@@ -187,17 +208,18 @@ def GameManagerView(request, club_id, game_id):
                 return redirect('dashboard', club_id=club_id)
         # Buy-In Update
         elif request.POST.get('form_name') == 'update_buy_in':
-            buy_ins = {}
             form = GameBuyInEditForm(request.POST, game=game)
             if form.is_valid():
-                for member_id, buy_in in form.cleaned_data.items():
-                    buy_ins[int(member_id)] = buy_in
+                buy_ins = {}
+                for player_id, buy_in in form.cleaned_data.items():
+                    buy_ins[int(player_id)] = buy_in
                 game.player_buy_ins = buy_ins
                 game.save()
                 game_scores_form = GameScoresForm(game=game)
                 buy_in_form = GameBuyInEditForm(game=game)
                 context = {'club': club, 'game': game,
                            'game_scores_form': game_scores_form, 'buy_in_form': buy_in_form}
+
                 return render(request, 'dashboard/game_manager.html', context)
     else:
         game_scores_form = GameScoresForm(game=game)

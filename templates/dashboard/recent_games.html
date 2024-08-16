@@ -1,6 +1,6 @@
 <div>
   <h2 class="text-center">Recent Games</h2>
-  <table class="ct text-center" >
+  <table class="ct ct-hover text-center" >
     <thead>
       <tr>
         <th>Type</th>
@@ -9,6 +9,7 @@
         <th>Players</th>
       </tr>
     </thead>
+    {% if club.games.all %}
     <tbody>
       {% for game in club.games.all %}
       <tr>
@@ -16,11 +17,17 @@
         <td>{{game.buy_in}}</td>
         <td>{{game.date}}</td>
         <td>
-          <ul>
-          {% for player in game.players.all %}
-            <li>{{ player.user.first_name }} {{ player.user.last_name }}</li>
-          {% endfor %}
-          </ul>
+          <div class="div-scrollable" style="max-height: 6em;">
+            <ul>
+            {% for player in game.players.all %}
+              {% if player.user %}
+                <li>{{ player.user.first_name }} {{ player.user.last_name }}</li>
+              {% else %}
+                <li>{{ player.created_user.first_name}} {{player.created_user.last_name }}</li>
+              {% endif %}
+            {% endfor %}
+            </ul>
+          </div>
         </td>
         <td class="text-center">
           <form method="post" name="game_remove">
@@ -35,6 +42,17 @@
       </tr>
       {% endfor %}
     </tbody>
+    {% else %}
+    <tbody>
+      <tr>
+        <td colspan="5">
+          <div style="margin-top: 1em;">
+            <p>No Games To Display</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    {% endif %}
   </table> 
 </div>
 </div>

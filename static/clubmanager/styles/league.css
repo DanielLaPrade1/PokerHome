@@ -4,16 +4,16 @@
   border-left: 1px solid darkgray;
   border-top: 1px solid darkgray;
   border-top-left-radius: 3%;
-  height: 50vh;
+  min-height: 50%;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .content-box-right {
   padding: 1em;
   display: flex;
   border: 1px solid darkgray;
-  height: 100vh;
+  min-height: 90vh;
   justify-content: center;
   border-radius: 5%;
 }
@@ -23,10 +23,12 @@
   align-items: flex-end;
   justify-content: center;
   height: 100%;
+  width: 100%;
+  margin: 0px 5%;
 }
 
 .podium__item {
-  width: 50%;
+  width: 25%;
   text-align: center;
 }
 
@@ -59,19 +61,19 @@
 }
 
 .first {
-  height: 250px;
+  height: 15em;
   background-color: #CFB53B;
   border-radius: 10px 10px 0px 0px;
 }
 
 .second {
-  height: 200px;
+  height: 12em;
   background-color: #A9A9A9 ;
   border-radius: 10px 0px 0px 0px;
 }
 
 .third {
-  height: 150px;
+  height: 10em;
   background-color: #9F6C3E;
   border-radius: 0px 10px 0px 0px;
 }
@@ -82,4 +84,66 @@
 
 .podium__rank.animate {
   height: 0;
+}
+
+/* download modal */
+.modal-download-leaderboard {
+  height: 70%;
+  width: 45%;
+  border: 1px solid #09131e;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px #09131e;
+  background-color: #0d1b2b;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.modal-download-leaderboard::backdrop {
+  background-image: url(../images/login_bg.jpg);
+  opacity: .1;
+}
+.modal-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.embedded-tabel-container {
+  border: 1px solid lightgray;
+  height: 80%;
+}
+
+.embedded-tabel {
+  width: 100%;
+  height: 100%;
+}
+
+/*large-*/
+@media screen and (max-width: 1200px){
+  .modal-download-leaderboard {
+    width: 60%;
+  }
+}
+/*medium-*/
+@media screen and (max-width: 991px) {
+  .modal-download-leaderboard {
+    width: 70%;
+  }
+  .podium__item {
+    width: 30%;
+  }
+}
+
+/*small-*/
+@media screen and (max-width: 768px){
+  .modal-download-leaderboard {
+    width: 100%;
+  }
+  .podium__item {
+    width: 25%;
+  }
+}
+/*mobile*/
+@media screen and (max-width: 576px){
+
+}
+@media screen and (max-width: 400px){
+
 }

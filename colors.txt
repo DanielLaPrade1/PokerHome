@@ -2,8 +2,9 @@ Color : Purpose
 ------------------------
 #498a76 : User Auth Background, Standout color
 #09131e : Background
+#142230: Content Box Backgrounds
 #ab904b : Gold Icon Color
 #ff7676 : Error Color
 #0d1b2b : Content Box and Top Nav Item Background
 #374a5c : Inputs / Other Small Elemenets
-LightGray : Text
+LightGray (#d3d3d3) : Text

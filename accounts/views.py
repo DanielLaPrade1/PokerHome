@@ -8,10 +8,7 @@ def RegisterView(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             form.save()
-            # If you want to log the user in and redirect to a new page:
-            # login(request, user)
-            # redirect to the desired page
-            return redirect(reverse('login'))  # Redirect them to login page
+            return redirect(reverse('login'))
     else:
         form = NewUserForm()
     return render(request, 'authentication/register.html', {"form": form})

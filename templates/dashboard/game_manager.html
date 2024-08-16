@@ -11,8 +11,8 @@
 </head>
 <body style="background-color: #0d1b2b;">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-6 d-flex flex-column">
+    <div class="row" style="margin-right: 0px; margin-left: 0px;">
+      <div class="col-md-6 d-flex flex-column">
         <!-- TOP LEFT -->
         <div class="content-box-gm top-left-box d-flex align-items-center justify-content-center">
           <!-- Timer -->
@@ -27,7 +27,7 @@
           <!-- Input Results -->
           <img class="m-5" src="{% static 'clubmanager/images/manager_graphic.png' %}" style="height: 20em; opacity: 0.8;">
           <div class="text-center">
-            <button class="open-input-results button-game" id="open-input-results" style="background-color: #ff7676; color: black;">End Game</button>
+            <button class="open-input-results glow-on-hover" id="open-input-results">End Game</button>
           </div>
           <!-- Dialog -->
           <dialog class="input-modal" id="input-modal">
@@ -54,7 +54,7 @@
           </dialog>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-md-6 p-2">
         <!-- RIGHT -->
         <!-- Main Container -->
         <div class="content-box-gm right-box p-2">
@@ -62,7 +62,7 @@
             <h1 class="m-2">Active Players</h1>
             <button class="m-2 button-game update-buy-in" id="open-buy-in">Edit</button>
           </div>
-          <table class="ct text-center">
+          <table class="ct text-center m-2">
             <thead>
               <tr>
                 <th>Name</th>
@@ -72,7 +72,11 @@
             <tbody>
               {% for player in game.players.all %}
               <tr>
+                {% if player.user %}
                 <td>{{ player.user.first_name }} {{ player.user.last_name }}</td>
+                {% else %}
+                <td>{{ player.created_user.first_name }} {{ player.created_user.last_name }}</td>
+                {% endif %}
                 <td>{{ player.score }}</td>
               </tr>
               {% endfor %}
@@ -81,6 +85,7 @@
         </div>
         <!-- Update Buy In Dialog -->
         <dialog class="input-modal" id="update-buy-in-modal">
+          <h2 class="text-center p-1">Buy Ins</h2>
           <form id="input-form" method="post">
             <!--Idenification--><input type="hidden" name="form_name" value="update_buy_in">
             {% csrf_token %}

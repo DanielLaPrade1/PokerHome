@@ -1,14 +1,19 @@
 {% load static %}
-<h1 class="text-center">{{ club.name }}</h1>
+<h1 class="text-center" id="clubName">{{ club.name }}</h1>
 <div class="row">
   <div class="col-md-6">
     <!-- TOP LEFT -->
     <div class="content-box-left text-center">
-      <div class="podium">
+      <div class="podium" id="playerPodium">
         <div class="podium__item">
           <p class="podium-player">
-            {{top_3.1.user.first_name}} 
-            {{top_3.1.user.last_name}}
+            {% if top_3.1.member.user %}
+              {{top_3.1.user.first_name}} 
+              {{top_3.1.user.last_name}}
+            {% else %}
+              {{top_3.1.created_user.first_name}} 
+              {{top_3.1.created_user.last_name}}
+            {% endif %}
           </p>
           <div class="podium__rank second">
             <h2 class="podium__name">
@@ -18,8 +23,13 @@
         </div>
         <div class="podium__item">
           <p class="podium-player">
-            {{top_3.0.user.first_name}} 
-            {{top_3.0.user.last_name}}
+            {% if top_3.0.user %}
+              {{top_3.0.user.first_name}} 
+              {{top_3.0.user.last_name}}
+            {% else %}
+              {{top_3.0.created_user.first_name}} 
+              {{top_3.0.created_user.last_name}}
+            {% endif %}
           </p>
           <div class="podium__rank first">
             <h2 class="podium__name">
@@ -29,8 +39,13 @@
         </div>
         <div class="podium__item">
           <p class="podium-player">
-            {{top_3.2.user.first_name}} 
-            {{top_3.2.user.last_name}}
+            {% if top_3.2.user %}
+              {{top_3.2.user.first_name}} 
+              {{top_3.2.user.last_name}}
+            {% else %}
+              {{top_3.2.created_user.first_name}} 
+              {{top_3.2.created_user.last_name}}
+            {% endif %}
           </p>
           <div class="podium__rank third">
             <h2 class="podium__name">
@@ -44,7 +59,7 @@
     <div class="content-box-left text-center" style="align-items: baseline;">
       <div>
         <h2 class="">Recent Games</h2>
-        <table class="ct">
+        <table class="ct ct-hover">
           <thead>
             <tr>
               <th>Type</th>
@@ -64,7 +79,7 @@
           {% endwith %}
           </tbody>
         </table> 
-        <button id="see-all-games" class="button-game">See All Games</button>
+        <button id="see-all-games" class="button-game m-3">See All Games</button>
       </div>
     </div>
   </div>
@@ -73,27 +88,40 @@
     <div class="content-box-right">
       <div class="text-center" style="width: 100%;">
         <h2 class="">LeaderBoard</h2>
-        <table class="ct">
-          <thead>
-            <tr>
-              <th scope="col">Ranking</th>
-              <th scope="col">Name</th>
-              <th scope="col">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for member in members %}
-            <tr>
-              <td>
-                {% if member.ranking != 999999 %}{{ member.ranking }}
-                {% else %}N/A{% endif %}
-              </td>
-              <td> {{member.user.first_name}} {{ member.user.last_name }}</td>
-              <td>{{ member.score }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table> 
+        <div class="div-scrollable div-scrollable-league mb-4" style="max-height: 35em;">
+          <table id="leaderboardTable" class="ct ct-hover">
+            <thead>
+              <tr>
+                <th scope="col">Ranking</th>
+                <th scope="col">Name</th>
+                <th scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for member in members %}
+              <tr>
+                <td>
+                  {{ member.ordinal_ranking }}
+                </td>
+                {% if member.user %}
+                  <td> {{member.user.first_name}} {{ member.user.last_name }}</td>
+                {% else %}
+                  <td> {{member.created_user.first_name}} {{ member.created_user.last_name }}</td>
+                {% endif %}
+                <td>{{ member.score }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <button class="button-game" id="openDownloadLeaderboard">Download Leaderboard</button>
+        <dialog class="container-sm modal-download-leaderboard" id="modalDownloadLeaderboard">
+          <div class="embedded-tabel-container m-2 mb-4" id="modalTableEmbed"><!-- Leaderboard pdf goes here --></div>
+          <div class="modal-options m-2 mx-4">
+            <button class="button-game" id="closeDownloadLeaderboard">Exit</button>
+            <button class="button-game" id="downloadTablePDF">Download PDF</button>
+          </div>
+        </dialog>
       </div>
     </div>
   </div>

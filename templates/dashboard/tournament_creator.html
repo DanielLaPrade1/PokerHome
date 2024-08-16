@@ -1,63 +1,105 @@
-<form method="post">
+{% load static %}
+<h2 class="d-flex align-items-center"><img class="calc-icon" src="{% static 'clubmanager/images/calculator.png' %}">Blind Calculator</h2>
+<form method="post" class="p-3 pb-4 mt-3" style="border: 1px solid lightgray; border-radius: 10px; width: 28%; background-color: #142230;">
   {% csrf_token %}
   <!--Idenification--><input type="hidden" name="form_name" value="start_tournament">
-  <div class="dropdown">
+  <div class="d-flex flex-column">
+    {{form.starting_stack}}
+    {{form.small_blind}}
+    {{form.target_duration}}
+    {{form.blind_duration}}
+  </div>
+  <div class="dropdown" style="margin: 0.4em 0.4em 0em 0em">
     <button class="button-game" onclick="event.preventDefault()">Players</button>
     <div class="content">
         {{form.players}}
     </div>
   </div>
-    {{form.starting_stack}}
-    {{form.small_blind}}
-    {{form.target_duration}}
-    {{form.blind_duration}}
-  <input class="button-game" type="submit">
+  <button class="button-game" type="submit">Create Tournament</button>
 </form>
 <h1 class="text-center" style="margin-top: 3%; margin-bottom: 1%;">Touraments In Queue</h1>
-<table class="ct text-center">
+<table class="ct ct-hover text-center">
   <thead>
     <tr>
       <th scope="col">Starting Stack</th>
-      <th scope="col">Small Blind</th>
+      <th scope="col">Starting Small Blind</th>
       <th scope="col">Duration</th>
       <th scope="col">Blind Duration</th>
-      <th scope="col">Blind Structure</th>
-      <th scope="col">Players</th>
-      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
     {% for tournament in club.tournaments.all %}
     <tr>
-      <td>{{tournament.starting_stack}}</td>
+      <td>{{tournament.starting_stack}} Chips</td>
       <td>{{tournament.small_blind}}</td>
-      <td>{{tournament.target_duration}}</td>
-      <td>{{tournament.blind_duration}}</td>
+      <td>{{tournament.target_duration}} Hours</td>
+      <td>{{tournament.blind_duration}} Minutes</td>
       <td>
-        <ul>
-        {% for level in tournament.blind_structure %}
-            <li>Level {{ level.0 }}: SB: {{ level.1 }} BB: {{ level.2 }} Time: {{ level.3 }}</li>
-        {% endfor %}
-        </ul>
-      </td>
-      <td>
-        <ul>
-        {% for player in tournament.players.all %}
-          <li>{{ player.user.first_name }} {{ player.user.last_name }}</li>
-        {% endfor %}
-        </ul>
-      </td>
-      <td>
-        <form method="post" name="game_remove">
-          {% csrf_token %}
+        <div class="d-flex text-center flex-column">
+          <form method="post" name="game_remove">
+            {% csrf_token %}
+            <div>
+              <!--Idenification--><input type="hidden" name="form_name" value="tournament_remove">
+              <!--Idenification--><input type="hidden" name="tournament_id" value="{{ tournament.id }}">
+              <button class="remove-btn" type="submit" onclick="return confirm('Are You Sure You Want to Remove This Tournament?')"></button>
+            </div>
+          </form>
           <div>
-            <!--Idenification--><input type="hidden" name="form_name" value="tournament_remove">
-            <!--Idenification--><input type="hidden" name="tournament_id" value="{{ tournament.id }}">
-            <button class="remove-btn" type="submit" onclick="return confirm('Are You Sure You Want to Remove This Tournament?')"></button>
+            <button class="expand-btn"></button>
           </div>
-        </form>
+        </div>
+      </td>
+    </tr>
+    <tr class="hidden-table-row" id="content-{{ tournament.id }}">
+      <td colspan="5">
+        <div class="d-flex p-4 justify-content-between">
+          <div class="d-flex" style="width: 70%;">
+            <div class="bs-container">
+              <h2 class="p-1">Blind Structure<button class="edit-btn-pencil"></button></h2>
+              <div class="div-scrollable" style="max-height: 20em;">
+                <table class="bs-table">
+                  <thead>
+                    <tr>
+                      <td></td>
+                      <td>Time</td>
+                      <td>SB</td>
+                      <td>BB</td>
+                    </tr>
+                  </thead>
+                  {% for level in tournament.blind_structure %}
+                  <tr>
+                    <td style="color: #ab904b;">{{ level.0 }}</td>
+                    <td>{{ level.3 }}</td>
+                    <td>{{ level.1 }}</td>
+                    <td>{{ level.2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+            <div class="t-players-container" style="margin: 0px 2em;">
+              <h2 class="p-1">Players<button class="edit-btn-pencil"></button></h2>
+              <div class="div-scrollable" style="max-height: 20em;">
+              <table class="">
+                {% for player in tournament.players.all %}
+                <tr>
+                  {% if player.user %}
+                    <li>{{ player.user.first_name }} {{ player.user.last_name }}</li>
+                  {% else %}
+                    <li>{{ player.created_user.first_name}} {{player.created_user.last_name }}</li>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </table>
+              </div>
+            </div>
+          </div>
+          <div class="t-edit-start">
+            <button class="button-game" style="background-color: #025602;"><img style="height: 0.8em; width: 0.8em; margin-right: 0.4em;" src="{% static 'clubmanager/images/play_start.svg' %}">Start</button>
+          </div>
+        </div>
       </td>
     </tr>
     {% endfor %}
   </tbody>
-</table> 
+</table>

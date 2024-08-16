@@ -62,7 +62,7 @@ def calculate_blind_structure(num_players, starting_stack, target_duration, blin
         rounding_factor = calculate_rounding_factor(
             small_blind, original_small_blind)
 
-        # 2. Actual Small Blind (should hang around precise small blind with rounding applied)
+        # 2. Actual Small Blind (precise small blind with rounding applied)
         small_blind = round_to_nearest_multiple(
             precise_small_blind, rounding_factor)
         big_blind = small_blind * 2
