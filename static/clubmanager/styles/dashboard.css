@@ -125,6 +125,23 @@ h1, h2, h3, h4, h5, h6, p, th, td, div {
   filter: invert(54%) sepia(56%) saturate(353%) hue-rotate(5deg) brightness(95%) contrast(93%);
 }
 
+.add-player-btn {
+  background: none;
+  filter: invert(72%) sepia(12%) saturate(1481%) hue-rotate(5deg) brightness(76%) contrast(100%);
+  background-size: contain;
+  background-repeat: no-repeat;
+  border: none;
+  background-image: url(../images/add.png);
+  height: 1em;
+  width: 1em;
+  rotate: 0deg;
+  transition: 0.4s ease;
+}
+.add-player-btn:hover {
+  filter: invert(22%) sepia(100%) saturate(3000%) hue-rotate(102deg) brightness(92%) contrast(103%);
+  rotate: 180deg;
+}
+
 .expand-btn {
   background: none;
   filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7440%) hue-rotate(186deg) brightness(106%) contrast(65%);
@@ -310,7 +327,6 @@ h1, h2, h3, h4, h5, h6, p, th, td, div {
   cursor: pointer;
   border: none;
 }
-
 .select-game::after {
   content: "";
   position: absolute;
@@ -322,7 +338,7 @@ h1, h2, h3, h4, h5, h6, p, th, td, div {
   border-left: 0.4em solid transparent;
   border-right: 0.4em solid transparent;
   border-top: 0.4em solid lightgray;
-  pointer-events:none;
+  pointer-events: none;
 }
 .select-game select:active .select-game select:focus  {
   outline: none;
@@ -335,6 +351,17 @@ h1, h2, h3, h4, h5, h6, p, th, td, div {
   width: 0.8em;
   margin-right: 0.3em;
   filter: invert(99%) sepia(0%) saturate(0%) hue-rotate(157deg) brightness(93%) contrast(77%);
+}
+
+/* Modal */
+.modal-add-player {
+  width: 45%;
+  border: 1px solid #09131e;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px #09131e;
+  background-color: #0d1b2b;
+  padding: 1.5em;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Tables */

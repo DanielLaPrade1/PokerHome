@@ -68,7 +68,7 @@ navLinks.forEach(function(link) {
           // Leaderboard Download Modal
           const clubName = document.getElementById('clubName').textContent;
           const openDownloadLeaderboard = document.getElementById('openDownloadLeaderboard');
-          const modalDownloadLeaderboard = document.getElementById("modalDownloadLeaderboard");
+          const modalDownloadLeaderboard = document.getElementById('modalDownloadLeaderboard');
           openDownloadLeaderboard.addEventListener('click', async () => { // Open Modal
             modalDownloadLeaderboard.showModal()
             modalDownloadLeaderboard.classList.add('active-modal');
@@ -99,6 +99,21 @@ navLinks.forEach(function(link) {
             }
           })
 
+        }
+
+        // PLAYERS
+        if (storedActiveLink == 'players') {
+          const openAddPlayer = document.getElementById('addPlayer');
+          const modalAddPlayer = document.getElementById('modalAddPlayer');
+          openAddPlayer.addEventListener('click', () => {
+            modalAddPlayer.showModal();
+            modalAddPlayer.classList.add('active-modal');
+          })
+          const closeAddPlayer = document.getElementById('closeAddPlayer')
+          closeAddPlayer.addEventListener('click', () => {
+            modalAddPlayer.close();
+            modalAddPlayer.classList.remove('active-modal');
+          })
         }
 
         // TOURNAMENT CREATOR

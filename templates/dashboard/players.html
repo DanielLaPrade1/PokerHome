@@ -2,7 +2,7 @@
 {% if members|length == 0 %}
   <p>No members found.</p>
 {% else %}
-<h1 class="text-center">Players</h1>
+<h1 class="d-flex align-items-center justify-content-center">Players<button id="addPlayer" class="add-player-btn m-2"></button></h1>
 <table class="ct ct-hover text-center">
   <thead>
     <tr>
@@ -57,22 +57,31 @@
   </tbody>
 </table> 
 {% endif %}
-<form method="post" name="players_add">
-  {% csrf_token %}
-  <div class="d-flex">
-    {{ form.username }}
-    <!--Idenification--><input type="hidden" name="form_name" value="players_add">
-    <button id="submit_player_add" type="submit" class="button-game" style="margin-left: 1em;">Add Member</button>
+<dialog class="container-sm modal-add-player" id="modalAddPlayer">
+  <div class="d-flex justify-content-end m-0">
+    <button id="closeAddPlayer" class="remove-btn"></button>
   </div>
-</form>
-<form method="post" name="created_players_add">
-  {% csrf_token %}
   <div class="d-flex">
-    {{ create_member_form.first_name }}
-    {{ create_member_form.last_name }}
-    {{ create_member_form.email }}
-    {{ create_member_form.phone }}
-    <!--Idenification--><input type="hidden" name="form_name" value="created_players_add">
-    <button id="submit_created_player_add" type="submit" class="button-game" style="margin-left: 1em;">Create Member</button>
+    <div class="p-4 text-center" style="width: 50%; border-right: 1px solid lightgray;">
+      <h4>Add Player By Username</h4>
+      <form method="post" name="players_add">
+        {% csrf_token %}
+        {{ form.username }}
+        <!--Idenification--><input type="hidden" name="form_name" value="players_add">
+        <button id="submit_player_add" type="submit" class="button-game m-1 mt-3">Add Member</button>
+      </form>
+    </div>
+    <div class="p-4 text-center" style="width: 50%; border-left: 1px solid lightgray;">
+      <h4>Create New Player</h4>
+      <form method="post" name="created_players_add">
+        {% csrf_token %}
+        {{ create_member_form.first_name }}
+        {{ create_member_form.last_name }}
+        {{ create_member_form.email }}
+        {{ create_member_form.phone }}
+        <!--Idenification--><input type="hidden" name="form_name" value="created_players_add">
+        <button id="submit_created_player_add" type="submit" class="button-game m-1 mt-3">Create Member</button>
+      </form>
+    </div>
   </div>
-</form>
+</dialog>

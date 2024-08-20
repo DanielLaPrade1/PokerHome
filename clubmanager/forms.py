@@ -20,13 +20,13 @@ class AddMemberForm(forms.Form):
 
 class CreatedMemberForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'input-game', 'placeholder': 'First Name', 'autocomplete': 'off'}), max_length=30)
+        attrs={'class': 'input-game m-1', 'placeholder': 'First Name', 'autocomplete': 'off'}), max_length=30)
     last_name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'input-game', 'placeholder': 'Last Name', 'autocomplete': 'off'}), max_length=30)
+        attrs={'class': 'input-game m-1', 'placeholder': 'Last Name', 'autocomplete': 'off'}), max_length=30)
     email = forms.EmailField(widget=forms.TextInput(
-        attrs={'class': 'input-game', 'placeholder': 'Email (optional)', 'autocomplete': 'off'}), required=False)
+        attrs={'class': 'input-game m-1', 'placeholder': 'Email (optional)', 'autocomplete': 'off'}), required=False)
     phone = forms.CharField(validators=[CustomUser.phone_regex], widget=forms.TextInput(
-        attrs={'class': 'input-game', 'placeholder': 'Phone Number (optional)', 'autocomplete': 'off'}), required=False)
+        attrs={'class': 'input-game m-1', 'placeholder': 'Phone Number (optional)', 'autocomplete': 'off'}), required=False)
 
     class Meta:
         model = CreatedUser
